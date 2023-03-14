@@ -6,5 +6,5 @@ Output: MPA protein report, Prophane functional and taxonomic annotation summary
 Software requirement: MetaProteomeAnalyzer, Prophane
 
 # Workflow
-# Spectrum correlation and protein grouping with MetaProteomeAnalyzer
+# Spectrum correlation and protein grouping with MPA
 # Taxonomic and functional annotation with Prophane
