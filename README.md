@@ -8,9 +8,9 @@ Software requirement: MetaProteomeAnalyzer, Prophane
 # Workflow
 
 # Spectrum correlation and protein grouping with MPA
-Input
+## Input
   1. MS file
-  2. protein fasta file \
+  2. protein fasta file 
 Database search
   1. Import customized protein database (e.g. predicted ORFs from matched metagenome)
   2. Create project and experiments in MPA using "Add Project" and "Add Experiment"
