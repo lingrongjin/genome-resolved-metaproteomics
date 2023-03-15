@@ -24,15 +24,30 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   2. Click "Fetch Results"
   3. After loading, click "Process Results"
   4. FDR threshold: 0.01 or 0.05
-  5. Choose protein grouping rule (Cluster rule may be better for sample comparison, Blakeley-Ruiz 2022)
+  5. *Choose protein grouping rule (Cluster rule may be better for sample comparison, Blakeley-Ruiz 2022)
   6. Click "OK"
   7. Go to “Export” in the Menu Bar and select “CSV File...”
   8. Click the “Export Metaproteins” button
   9. Select the desired output folder and file name and click the “Save” button.
+## Output
+1. Metaprotein report
+ 
 
 # Taxonomic and functional annotation with Prophane
 ## Input
   1. protein report 
-  2. protein fasta file (same as the protein database used in MPA search) 
-Note: If using generic table format, MPA protein report should be arranged as ">sample id|contig id|description"
-
+  2. protein fasta file 
+*Note: If using generic table format, MPA protein report should be arranged as ">sample id|contig id|description"
+*Can get the list of matched ORFs by contig id mapping
+## Job submission
+  1. Start the web service: https://www.prophane.de
+  2. Click job submission
+  3. Upload protein report and select the correct source format
+  4. Upload fasta file (same as the protein database used in MPA search) 
+  5. *Can customize the workflow by turning on "expert" mode
+  6. Submit
+7. Download results in "Job Control"
+## Output
+  1. job_info
+  2. summary_txt.
+  3. plots
