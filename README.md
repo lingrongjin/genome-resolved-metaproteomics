@@ -1,4 +1,4 @@
-#Paired metagenomic and metaproteomic analysis
+# Paired metagenomic and metaproteomic analysis
 
 # Introduction
 Input: raw mass spectroscopy file, predicted ORFs from metagenome for each sample \
@@ -35,3 +35,4 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   1. protein report 
   2. protein fasta file (same as the protein database used in MPA search) 
 Note: If using generic table format, MPA protein report should be arranged as ">sample id|contig id|description"
+
