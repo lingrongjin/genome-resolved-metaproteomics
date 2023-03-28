@@ -14,7 +14,7 @@ Convert Prodigal predicted gene sequences to protein sequences
   1. MS file
   2. protein fasta file 
 ## Database search
-  1. Import customized protein database (e.g. predicted ORFs from matched metagenome, should be formatted as >contig_id - when imported into MPA will be changed into >generic|contig_id|Metagenome_unknown)
+  1. Import customized protein database (e.g. predicted ORFs from matched metagenome, should be formatted as ">contig_id" - when imported into MPA will be changed into ">generic|contig_id|Metagenome_unknown")
   2. Create project and experiments in MPA using "Add Project" and "Add Experiment"
   3. Input spectra
   4. Use default search settings unless having special requirement (You may want to unselect Mascot if you don't have Mascot search results)
