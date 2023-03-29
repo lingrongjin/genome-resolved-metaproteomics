@@ -29,7 +29,7 @@ Convert Prodigal predicted gene sequences to protein sequences
   5. *Choose protein grouping rule (Cluster rule may be better for sample comparison, Blakeley-Ruiz 2022) - Uniref 50, 90 or 100?
   6. Click "OK"
   7. Go to “Export” in the Menu Bar and select “CSV File...”
-  8. Click the “Export Metaproteins” button
+  8. Click the “Export Metaproteins” button Note: don't select columns - will mess up the result files!
   9. Select the desired output folder and file name and click the “Save” button.
 ## Output
 1. Metaprotein report
