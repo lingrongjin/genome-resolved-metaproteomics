@@ -6,8 +6,6 @@ Output: MPA protein report, Prophane functional and taxonomic annotation summary
 Software requirement: MetaProteomeAnalyzer, Prophane
 
 # Workflow
-# Optional
-Convert Prodigal predicted gene sequences to protein sequences
 
 # Spectrum correlation and protein grouping with MPA
 ## Input
@@ -26,21 +24,19 @@ Convert Prodigal predicted gene sequences to protein sequences
   2. Click "Fetch Results"
   3. After loading, click "Process Results"
   4. FDR threshold: 0.01 or 0.05
-  5. *Choose protein grouping rule (Cluster rule may be better for sample comparison, Blakeley-Ruiz 2022) - Uniref 50, 90 or 100?
+  5. Choose protein grouping rule (Cluster rule may be better for sample comparison, Blakeley-Ruiz 2022)
   6. Click "OK"
   7. Go to “Export” in the Menu Bar and select “CSV File...”
-  8. Click the “Export Metaproteins” button Note: don't select columns - will mess up the result files!
+  8. Can export either "Meta-proteins" or "Proteins" report (If cluster using Uniref100, the two reports will be similar, i.e. usually only one protein per group)
   9. Select the desired output folder and file name and click the “Save” button.
 ## Output
-1. Metaprotein report
+1. (Meta-)protein report (Useful columns: protein accessions, sequence coverage, peptide count, NSAF, spectral count, protein sequence, peptides)
  
-
 # Taxonomic and functional annotation with Prophane
 ## Input
   1. protein report 
   2. protein fasta file 
 *Note: If using generic table format, MPA protein report should be arranged as ">sample id|contig id|description"
-*Can get the list of matched ORFs by contig id mapping
 ## Job submission
   1. Start the web service: https://www.prophane.de
   2. Click job submission
