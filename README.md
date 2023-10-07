@@ -20,7 +20,7 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   6. Select "Single Experiment" if uploading only one MGF file
   7. Start search 
 ## Protein inference
-  1. Select and experiment and click "View Results"
+  1. Select experiment and click "View Results"
   2. Click "Fetch Results"
   3. After loading, click "Process Results"
   4. FDR threshold: 0.01 or 0.05
