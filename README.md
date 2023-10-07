@@ -27,10 +27,12 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   5. Choose protein grouping rule (Cluster rule may be better for sample comparison, Blakeley-Ruiz 2022)
   6. Click "OK"
   7. Go to “Export” in the Menu Bar and select “CSV File...”
-  8. Can export either "Meta-proteins" or "Proteins" report (If cluster using Uniref100, the two reports will be similar, i.e. usually only one protein per group)
-  9. Select the desired output folder and file name and click the “Save” button.
+  8. Export identified proteins: can export either "Meta-proteins" or "Proteins" (If cluster using Uniref100, the two reports will be similar, i.e. usually only one protein per group)
+  9. Export unique peptides
+
 ## Output
-1. (Meta-)protein report (Useful columns: protein accessions, sequence coverage, peptide count, NSAF, spectral count, protein sequence, peptides)
+1. (Meta-)proteins (Useful columns: protein accessions, sequence coverage, peptide count, NSAF, spectral count, protein sequence, peptides)
+2. Unique peptides (Useful columns: peptidd no., protein accession(s), peptide sequence, protein count, spectral count)
  
 # Taxonomic and functional annotation with Prophane
 ## Input
