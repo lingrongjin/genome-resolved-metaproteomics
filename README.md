@@ -19,7 +19,7 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   5. Select and input MGF files
   6. Select "Single Experiment" if uploading only one MGF file
   7. Start search 
-## Protein grouping
+## Protein inference
   1. Select and experiment and click "View Results"
   2. Click "Fetch Results"
   3. After loading, click "Process Results"
