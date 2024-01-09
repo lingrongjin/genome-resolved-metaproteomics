@@ -34,7 +34,7 @@ Software requirement: MetaProteomeAnalyzer, Prophane
 1. (Meta-)proteins (Useful columns: protein accessions, sequence coverage, peptide count, NSAF, spectral count, protein sequence, peptides)
 2. Unique peptides (Useful columns: peptidd no., protein accession(s), peptide sequence, protein count, spectral count)
  
-# Taxonomic and functional annotation with Prophane
+# Taxonomic and functional annotation with Prophane (Optional)
 ## Input
   1. protein report 
   2. protein fasta file 
@@ -51,3 +51,6 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   1. job_info
   2. summary_txt.
   3. plots
+# R packages required for data visualization
+library(tidyverse)\
+library(ggthemes)
