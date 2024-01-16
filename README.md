@@ -53,4 +53,5 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   3. plots
 # R packages required for data visualization
 library(tidyverse)\
-library(ggthemes)
+library(ggthemes) \
+library(vegan)
