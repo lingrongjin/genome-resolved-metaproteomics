@@ -56,4 +56,9 @@ library(tidyverse)\
 library(ggthemes) \
 library(vegan) \
 library(reshape2) \
-library(ComplexHeatmap)
+library(ComplexHeatmap) \
+library(stringr) \
+library(tidyr) \
+library(forcats) \
+library(ggsci) \
+library(ggthemes)
