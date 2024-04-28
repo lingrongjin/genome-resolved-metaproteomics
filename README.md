@@ -1,16 +1,13 @@
 # Paired metagenomic and metaproteomic analysis
-
 # Introduction
-Input: raw mass spectroscopy file, predicted ORFs from metagenome for each sample \
-Output: MPA protein report, Prophane functional and taxonomic annotation summary report \
-Software requirement: MetaProteomeAnalyzer, Prophane
+Description below includes the workflow for spectrum correlation with MetaProteomeAnalyzer. Code and data for reproducing the figures in the manuscript can be found in 'R_scripts' and 'data' folder in this repository.
 
-# Workflow
-
-# Spectrum correlation and protein grouping with MPA
+# Spectrum correlation with MetaProteomeAnalyzer
+## Software requirement
+  1. MetaProteomeAnalyzer (Schiebenhoefer et al., 2020)
 ## Input
-  1. MS file
-  2. protein fasta file 
+  1. MS file (raw mass spectroscopy file)
+  2. protein fasta file (predicted ORFs from matched metagenome)
 ## Database search
   1. Import customized protein database (e.g. predicted ORFs from matched metagenome) Note: protein fasta should be formatted as ">contig_id" - when imported into MPA the header will be changed into ">generic|contig_id|Metagenome_unknown"
   2. Create project and experiments in MPA using "Add Project" and "Add Experiment"
@@ -24,42 +21,27 @@ Software requirement: MetaProteomeAnalyzer, Prophane
   2. Click "Fetch Results"
   3. After loading, click "Process Results"
   4. FDR threshold: 0.01 or 0.05
-  5. Choose protein grouping rule (Cluster rule may be better for sample comparison, Blakeley-Ruiz 2022)
+  5. Choose protein grouping rule
   6. Click "OK"
   7. Go to “Export” in the Menu Bar and select “CSV File...”
   8. Export identified proteins: can export either "Meta-proteins" or "Proteins" (If cluster using Uniref100, the two reports will be similar, i.e. usually only one protein per group)
   9. Export unique peptides
-
 ## Output
 1. (Meta-)proteins (Useful columns: protein accessions, sequence coverage, peptide count, NSAF, spectral count, protein sequence, peptides)
 2. Unique peptides (Useful columns: peptidd no., protein accession(s), peptide sequence, protein count, spectral count)
  
-# Taxonomic and functional annotation with Prophane (Optional)
-## Input
-  1. protein report 
-  2. protein fasta file 
-*Note: If using generic table format, MPA protein report should be arranged as ">sample id|contig id|description"
-## Job submission
-  1. Start the web service: https://www.prophane.de
-  2. Click job submission
-  3. Upload protein report and select the correct source format
-  4. Upload fasta file (same as the protein database used in MPA search) 
-  5. *Can customize the workflow by turning on "expert" mode
-  6. Submit
-7. Download results in "Job Control"
-## Output
-  1. job_info
-  2. summary_txt.
-  3. plots
 # R packages required for data visualization
 library(tidyverse)\
 library(ggthemes) \
 library(vegan) \
 library(reshape2) \
 library(ComplexHeatmap) \
-library(ggplot2) 
+library(ggplot2) \
 library(stringr) \
 library(tidyr) \
 library(forcats) \
 library(ggsci) \
 library(ggthemes)
+
+# Reference
+1. Schiebenhoefer, H.; Schallert, K.; Renard, B. Y.; Trappe, K.; Schmid, E.; Benndorf, D.; Riedel, K.; Muth, T.; Fuchs, S. A Complete and Flexible Workflow for Metaproteomics Data Analysis Based on MetaProteomeAnalyzer and Prophane. Nat. Protoc. 2020, 15 (10), 3212–3239. https://doi.org/10.1038/s41596-020-0368-7
