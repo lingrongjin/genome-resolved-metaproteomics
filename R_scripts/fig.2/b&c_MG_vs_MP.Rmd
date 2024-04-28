@@ -1,0 +1,90 @@
+---
+title: "MG_vs_MP_abundance"
+output: html_document
+date: "2024-04-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load and process data
+```{r}
+dir <- "PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data"
+mg_abund_data <- read.csv(paste0(dir, "/MG_rel_abund_data.csv")) %>%
+  mutate(time2 = case_when(
+    time == "Summer" ~ "S",
+    time == "Fall" ~ "F",
+    time == "Winter" ~ "W"
+  ))
+mg_abund_data$time2 <- factor(mg_abund_data$time2, levels = c('S', 'F', 'W'))
+mg_abund_data$site <- factor(mg_abund_data$site, levels = c("Influent", "AD", "Anoxic", "Oxic"))
+abund_order <- mg_abund_data %>%
+  group_by(phylum2)%>%
+  summarize(total_rel_abund= sum(rel_abund)) %>%
+  arrange(desc(total_rel_abund))
+mg_abund_data$phylum2 <- factor(mg_abund_data$phylum2, levels = abund_order$phylum2)
+
+mp_abund_data <- read.csv(paste0(dir, "/MP_rel_abund_data.csv")) %>%
+  mutate(time2 = case_when(
+    time == "Summer" ~ "S",
+    time == "Fall" ~ "F",
+    time == "Winter" ~ "W"
+  ))
+mp_abund_data$phylum2 <- factor(mp_abund_data$phylum2, levels = abund_order$phylum2)
+mp_abund_data$time2 <- factor(mp_abund_data$time2, levels = c('S', 'F', 'W'))
+mp_abund_data$site <- factor(mp_abund_data$site, levels = c("Influent", "AD", "Anoxic", "Oxic"))
+
+```
+
+# bar plot visualization (MG)
+```{r}
+f2b <- ggplot(mg_abund_data, aes(x = time2, y = rel_abund, fill = phylum2))+
+  geom_bar(stat = "identity")+
+  facet_grid(~site, )+
+  scale_fill_tableau(palette="Tableau 20")+
+  theme_bw()+
+  theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.title.y = element_text(color="black", size = 14), 
+        axis.line = element_line(color="black", size = .25),
+        axis.text.y = element_text(color="black", size = 12),
+        axis.text.x = element_text(color="black", size = 12, vjust = 0.5),
+        axis.ticks.y = element_line(color="black", size = .25),
+        axis.ticks.x = element_blank(),
+        legend.position = 'none',
+        panel.background = element_rect(fill = "white"),
+        plot.title = element_text(color="black", size = 16, hjust = 0.5),
+        strip.text = element_text(color="black", size = 14))+
+  labs(y = "Relative Abundance %")+
+  ggtitle("Metagenome")
+```
+
+# bar plot visualization (MP)
+```{r}
+f2c <- ggplot(mp_abund_data, aes(x = time2, y = rel_abund, fill = phylum2))+
+  geom_bar(stat = "identity")+
+  facet_grid(~site)+
+  scale_fill_tableau(palette="Tableau 20")+
+  theme_bw()+
+  theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.title.y = element_text(color="black", size = 14), 
+        axis.line = element_line(color="black", size = .25),
+        axis.text.y = element_text(color="black", size = 12),
+        axis.text.x = element_text(color="black", size = 12, vjust = 0.5),
+        axis.ticks.y = element_line(color="black", size = .25),
+        axis.ticks.x = element_blank(),
+        legend.position = 'none',
+        panel.background = element_rect(fill = "white"),
+        plot.title = element_text(color="black", size = 16, hjust = 0.5),
+        strip.text = element_text(color="black", size = 14)
+  )+
+  labs(y = "Relative Abundance %", fill = "Phylum")+
+  ggtitle("Metaproteome")
+```
+

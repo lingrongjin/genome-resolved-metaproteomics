@@ -1,0 +1,100 @@
+---
+title: "denitrification_protein_expression"
+output: html_document
+date: "2024-04-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load data
+```{r}
+dir <- "PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data"
+denitrification_proteins <- read.csv(paste0(dir, "/denitrification_protein_expression.csv"))
+denitrification_proteins$time <- factor(denitrification_proteins$time, levels = c("Summer", "Fall", "Winter"))
+```
+
+# NO3 -> NO2
+```{r}
+ggplot(denitrification_proteins %>% filter(str_detect(gene_short, "nar")|str_detect(gene_short, "nap")), aes(x = time, y = as.factor(gene_short_MAG)))+
+  geom_tile(aes(fill = log(nsaf)))+
+  scale_fill_gradient(low = "white", high = "red", limits = c(-10, -6))+
+  theme_bw(base_size = 26/.pt)+
+  theme(axis.text.x = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(),
+        panel.background = element_rect(fill = "white"), 
+        axis.text.y = element_text(size = 12, face = "bold", color = "black"),
+        axis.ticks.x = element_blank(), 
+        legend.position = "none",
+        strip.text = element_text(size = 14, color = "black"))+
+  scale_y_discrete(position = "right")+
+  labs(fill = "log(NSAF)") +
+  facet_wrap(~site)
+```
+
+# NO2 -> NO
+```{r}
+ggplot(denitrification_proteins %>% filter(str_detect(gene_short, "nir")), aes(x = time, y = as.factor(gene_short_MAG)))+
+  geom_tile(aes(fill = log(nsaf)))+
+  scale_fill_gradient(low = "white", high = "red", limits = c(-10, -6))+
+  theme_bw(base_size = 26/.pt)+
+  theme(axis.text.x = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(),
+        panel.background = element_rect(fill = "white"), 
+        axis.text.y = element_text(size = 12, face = "bold", color = "black"),
+        axis.ticks.x = element_blank(), 
+        legend.position = "none",
+        strip.text = element_text(size = 14, color = "black"))+
+  scale_y_discrete(position = "right")+
+  labs(fill = "log(NSAF)") +
+  facet_wrap(~site)
+```
+
+# NO->N2O
+```{r}
+ggplot(denitrification_proteins %>% filter(str_detect(gene_short, "nor")), aes(x = time, y = as.factor(gene_short_MAG)))+
+  geom_tile(aes(fill = log(nsaf)))+
+  scale_fill_gradient(low = "white", high = "red", limits = c(-10, -6))+
+  theme_bw(base_size = 25/.pt)+
+  theme(axis.text.x = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(),
+        panel.background = element_rect(fill = "white"), 
+            axis.text.y = element_text(size = 12, face = "bold", color = "black"),
+        axis.ticks.x = element_blank(), 
+        legend.position = "none",
+        strip.text = element_text(size = 14, color = "black"))+
+  scale_y_discrete(position = "right")+
+  labs(fill = "log(NSAF)") +
+  facet_wrap(~site)
+```
+
+# N2O -> N2
+```{r}
+ggplot(denitrification_proteins %>% filter(str_detect(gene_short, "nos")), aes(x = time, y = as.factor(gene_short_MAG)))+
+  geom_tile(aes(fill = log(nsaf)))+
+  scale_fill_gradient(low = "white", high = "red", limits = c(-10, -6))+
+  theme_bw(base_size = 25/.pt)+
+  theme(axis.text.x = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(),
+        panel.background = element_rect(fill = "white"), 
+           axis.text.y = element_text(size = 12, face = "bold", color = "black"),
+        axis.ticks.x = element_blank(), 
+        legend.position = "none",
+        strip.text = element_text(size = 14, color = "black"))+
+  scale_y_discrete(position = "right")+
+  labs(fill = "log(NSAF)") +
+  facet_wrap(~site)
+```

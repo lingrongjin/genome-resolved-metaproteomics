@@ -1,0 +1,37 @@
+---
+title: "fundamental_niche"
+output: html_document
+date: "2024-04-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load data
+```{r}
+cluster_data_5 <- read.csv("PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data/cluster_data_5.csv")
+```
+
+# data preprocessing
+```{r}
+cluster_data_5$phylum2 <- ifelse(str_detect(cluster_data_5$phylum, "Firmicutes"), "Firmicutes", cluster_data_5$phylum)
+cluster_data_5$phylum2 <- ifelse(str_detect(cluster_data_5$phylum, "Desulfobacterota"), "Desulfobacterota", cluster_data_5$phylum2)
+```
+
+```{r}
+cluster_data_5$phylum2 <- factor(cluster_data_5$phylum2, levels = c("Bacteroidota", "Firmicutes","Proteobacteria", "Synergistota","Desulfobacterota", "Actinobacteriota", "Halobacteriota", "Verrucomicrobiota", "Myxococcota", "Nitrospirota", "Methanobacteriota", "Spirochaetota", "Fibrobacterota"))
+
+cluster_data_5$fun_group <- paste("Group", cluster_data_5$cluster, sep = " ")
+```
+
+# NMDS plot
+```{r}
+f3a <- ggplot(cluster_data_5, aes(x = NMDS1, y = NMDS2))+
+  geom_point(aes(fill = phylum2), size = 4, shape = 21, color = "black")+
+  scale_fill_tableau(palette="Tableau 20")+
+  stat_ellipse(aes(group = fun_group, color = fun_group), size = 1, show.legend=F)+
+  scale_color_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  theme_classic(base_size = 26/.pt)+
+  labs(fill = "Phylum")
+```

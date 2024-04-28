@@ -1,0 +1,104 @@
+---
+title: "functional_composition_bySite&Time"
+output: html_document
+date: "2023-11-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load data
+```{r}
+dir <- "PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data"
+data_joined <- read.csv(paste0(dir, "/AllSamples_taxa_function_uniquePept.csv"))
+```
+
+# preprocess data
+```{r}
+# group NAs into "Function unknown"
+data_joined$cog_name <- ifelse(is.na(data_joined$cog_name), "Function unknown", data_joined$cog_name)
+
+# top 10 functional categories (by number of proteins)
+test2 <- data_joined %>%
+  group_by(cog_name) %>%
+  summarize(n_proteins = n()) %>%
+  arrange(desc(n_proteins))
+
+# group less abundant categories into others
+data_joined$cog_grouped <- ifelse(data_joined$cog_name %in% test2$cog_name[1:11], data_joined$cog_name, "Others")
+
+data_joined <- data_joined %>%
+  mutate(site = case_when(
+    sample_id %in% c("L001","L036", "L078") ~ 'raw_wastewater', 
+    sample_id %in% c("L003","L038","L080") ~ 'anaerobic_digester', 
+    sample_id %in% c("L004","L039","L081") ~ 'anoxic_tank', 
+    sample_id %in% c("L005","L040","L082") ~ 'oxic_tank'
+    ))
+
+data_joined <- data_joined %>%
+  mutate(time = case_when(
+    sample_id %in% c("L001","L003", "L004", "L005") ~ 'S', 
+    sample_id %in% c("L036","L038", "L039", "L040") ~ 'F', 
+    sample_id %in% c("L078","L080", "L081", "L082") ~ 'W'
+    ))
+
+data_joined$time <- factor(data_joined$time, levels = c('S', 'F', 'W'))
+
+data_joined$site <- factor(data_joined$site, levels = c("raw_wastewater", "anaerobic_digester", "anoxic_tank", "oxic_tank"))
+
+data_joined$cog_grouped <- factor(data_joined$cog_grouped, levels = c("Function unknown", "Others", "Energy production and conversion", "Translation, ribosomal structure and biogenesis", "Cell wall/membrane/envelope biogenesis", "Posttranslational modification, protein turnover, chaperones", "Inorganic ion transport and metabolism", "Intracellular trafficking, secretion, and vesicular transport", "Cell motility", "Replication, recombination and repair", "Amino acid transport and metabolism", "Carbohydrate transport and metabolism"))
+```
+
+
+```{r}
+facet_labels <- c(
+                    `raw_wastewater` = "Influent",
+                    `anaerobic_digester` = "Anaerobic Digestor",
+                    `anoxic_tank` = "Anoxic Tank",
+                    `oxic_tank` = "Oxic Tank"
+                    )
+
+# create a new column adding cog code to the description
+data_joined$cog_annot <- paste(data_joined$COG_code, data_joined$cog_grouped, sep = "-")
+data_joined$cog_annot <- ifelse(data_joined$cog_annot == "--Function unknown", "S-Function unknown", data_joined$cog_annot)
+data_joined$cog_annot <- ifelse(str_detect(data_joined$cog_annot, "Others"), "Others", data_joined$cog_annot)
+data_joined$cog_annot <- factor(data_joined$cog_annot, levels = c("C-Energy production and conversion", "J-Translation, ribosomal structure and biogenesis", "M-Cell wall/membrane/envelope biogenesis", "O-Posttranslational modification, protein turnover, chaperones", "P-Inorganic ion transport and metabolism", "U-Intracellular trafficking, secretion, and vesicular transport", "N-Cell motility", "L-Replication, recombination and repair", "E-Amino acid transport and metabolism", "G-Carbohydrate transport and metabolism", "S-Function unknown", "Others"))
+
+data_joined_summary <- data_joined %>%
+  ungroup() %>%
+  group_by(site, time, gene_id, cog_annot) %>%
+  summarize(n = n())
+```
+
+# bar plot
+```{r}
+facet_labels <- c(
+                    `raw_wastewater` = "Influent",
+                    `anaerobic_digester` = "AD",
+                    `anoxic_tank` = "Anoxic",
+                    `oxic_tank` = "Oxic"
+                    )
+
+f4b <- ggplot(data_joined_summary, aes(x = time, y = n, fill = cog_annot))+
+  geom_bar(stat = "identity", position = 'stack')+
+  facet_grid(~ site, labeller = as_labeller(facet_labels))+
+  theme_bw()+
+  theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.title.y = element_text(size = 18), 
+        legend.title = element_text(size = 18), 
+        legend.text = element_text(size = 16),
+        legend.position = "bottom",
+        legend.justification = "left",
+        panel.background = element_rect(fill = "white"),
+        strip.text.x = element_text(size = 16),
+        axis.text = element_text(size = 16))+
+  # scale_fill_d3(palette="category20")+
+  scale_fill_brewer(palette="Set3")+
+  # scale_fill_tableau(palette="Tableau 20")+
+  labs(y = "Number of Proteins", fill = "COG Function")+
+  guides(fill=guide_legend(ncol = 1, title.position = "top"))
+```

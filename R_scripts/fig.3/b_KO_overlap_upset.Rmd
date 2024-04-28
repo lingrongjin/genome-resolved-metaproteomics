@@ -1,0 +1,75 @@
+---
+title: "KO_overlap_upset"
+output: html_document
+date: "2024-04-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load data
+```{r}
+mag_ko <- read.csv("/storage/jufengLab/jinlingrong/R/proteomics/data/processed_data/fundamental_niche_mag_ko.csv") # 5542 unique KOs
+mag_ko$cluster <- paste("Group", mag_ko$cluster, sep = " ")
+```
+
+# data preprocessing
+```{r}
+upset_data <- mag_ko %>%
+  group_by(cluster, ko) %>%
+  summarize(n = n())
+
+binary_matrix <- dcast(upset_data, ko ~ cluster, fun.aggregate = length, value.var = "n")
+binary_matrix[is.na(binary_matrix)] <- 0
+binary_matrix[, -1] <- lapply(binary_matrix[, -1], as.logical)
+rownames(binary_matrix) <- binary_matrix$ko
+binary_matrix$ko <- NULL
+```
+
+# make combination matrix
+```{r}
+m <- make_comb_mat(binary_matrix)
+```
+
+# Upset plot visualization
+```{r}
+col_size = comb_size(m)
+ht = UpSet(m, 
+           pt_size = unit(1.6, "mm"),
+           lwd = 0.8,
+           bg_pt_col = "#ECECEC",
+           bg_col = "#fafafa",
+           set_order = c("Group 1", "Group 2", "Group 3", "Group 4", "Group 5"), 
+           comb_order = order(-comb_size(m)),
+           top_annotation = upset_top_annotation(m, 
+                                              ylim = c(0, max(col_size)*1.1),
+                                              show_annotation_name = F,
+                                              axis_param = list(gp = gpar(fontsize = 6))),
+           row_names_gp = gpar(fontsize = 6)
+      )
+ht = draw(ht)
+col_od = column_order(ht)
+
+decorate_annotation("intersection_size", {
+	grid.text(col_size[col_od], 
+		seq_len(length(col_size)), 
+		unit(col_size[col_od], "native") + unit(2, "mm"), 
+		default.units = "native", just = "bottom",
+		gp = gpar(fontsize = 6))
+})
+```
+
+# Sum of unique KOs for each group
+```{r}
+set_size <- data.frame("set" = c("Group 1", "Group 2", "Group 3", "Group 4", "Group 5"), "size" = c(3072, 1469, 2580, 3324, 3083))
+p <- ggplot(set_size, aes(x = set, y = size, fill = set))+
+  geom_bar(stat = "identity")+
+  coord_flip()+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  theme_classic(base_size = 20/.pt)+
+  theme(
+    legend.position = "none"
+  )+
+  labs(x = "", y = "Total number of unique KOs")
+```

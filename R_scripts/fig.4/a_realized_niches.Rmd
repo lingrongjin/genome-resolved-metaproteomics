@@ -1,0 +1,78 @@
+---
+title: "realized_niche"
+output: html_document
+date: "2024-04-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load data
+```{r}
+dir <- "PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data"
+proteins_MAGs_3Samples <- read.csv(paste0(dir, "/proteins_MAGs_3Samples.csv"))
+proteins_MAGs_3Samples$time <- factor(proteins_MAGs_3Samples$time, levels = c('Summer', 'Fall', 'Winter'))
+KO_list <- read.delim(paste0(dir, "/MAG_orf_combined_KOs.txt"), sep = "\t", header = F)
+colnames(KO_list) <- c("gene_id", "ko")
+cluster_data_5 <- read.csv(paste0(dir, "/cluster_data_5.csv"))
+```
+
+# preprocess data
+```{r}
+realized_niche_data <- left_join(proteins_MAGs_3Samples, KO_list, by = "gene_id") # 3996 -> 4076 (some genes have multiple KO assignments)
+realized_niche_data_noNA <- filter(realized_niche_data, ko != "") # 2647 (60% genes have KO assignments)
+
+realized_niche_data_noNA <- filter(realized_niche_data, ko != "") # 2647
+realized_niche_data_noNA <- left_join(realized_niche_data_noNA, select(cluster_data_5, cluster, mag_id), by = "mag_id")
+realized_niche_data_noNA$mag_per_sample <- paste(realized_niche_data_noNA$sample_id, realized_niche_data_noNA$mag_id, sep = "_")
+mag_ko <- select(realized_niche_data_noNA, cluster, mag_per_sample, ko) 
+
+num_ko <- mag_ko %>%
+  count(cluster, mag_per_sample) %>%
+  arrange(desc(n)) # 1 ~ 168 
+
+# select MAGs with >= 3 detected protein expressions
+ko_3more <- num_ko %>%
+  filter(n >= 3)  # 162
+
+mag_ko_3more <- filter(mag_ko, mag_per_sample %in% unique(ko_3more$mag_per_sample)) # 2392
+```
+
+# create presence/absence matrix with MAG as rows and Ko as columns
+```{r}
+binary_matrix <- reshape2::dcast(mag_ko_3more, mag_per_sample ~ ko) # 162x499 (>=2 seasons); 
+rownames(binary_matrix) <- binary_matrix$mag_per_sample
+binary_matrix$mag_per_sample <- NULL
+```
+
+# calculate jaccard distance & NMDS scores
+```{r}
+set.seed(1)
+mds_results_20 <- metaMDS(binary_matrix, "jaccard", trymax = 100, k = 20) # stress = 0.015
+mds_scores_20 <- as.data.frame(scores(mds_results_20)$sites)
+mds_scores_20$mag_per_sample <- rownames(mds_scores_20)
+row.names(mds_scores_20) <- NULL
+```
+
+```{r}
+mds_scores_20 <- left_join(mds_scores_20, select(realized_niche_data_noNA, cluster, mag_per_sample, site, time), by = "mag_per_sample")
+
+mds_scores_20$fun_group <- paste("Group", mds_scores_20$cluster, sep = " ")
+```
+
+# NMDS visualization
+```{r}
+f4a <- ggplot(mds_scores_20, aes(x = NMDS1, y = NMDS2, color = fun_group, shape = site))+
+  geom_point(size = 6, alpha = 0.5)+
+  stat_ellipse(aes(group = fun_group, color = fun_group))+
+  theme_classic()+
+  scale_color_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+ 
+  labs(color = "Functional group", shape = "Site")+
+  theme(
+    axis.title = element_text(color="black", size = 18), 
+    axis.text = element_text(color="black", size = 16),
+    legend.text = element_text(color="black", size = 18),
+    legend.title = element_text(color="black", size = 18)
+  )
+```

@@ -1,0 +1,171 @@
+---
+title: "metabolic_map"
+output: html_document
+date: "2024-04-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load data
+```{r}
+ko_annot <- read.csv("/storage/jufengLab/jinlingrong/R/metaproteomic-data-analysis/SI/ko_annotation.csv")
+```
+
+# carbohydrate metabolism
+```{r}
+ko_annot %>%
+  group_by(B, C, cluster) %>%
+  summarise(n = n()) %>%
+  filter(B %in% c("Carbohydrate metabolism")) %>%
+  filter(!C %in% c("Pyruvate metabolism", "Butanote metabolism")) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~B)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")
+```
+
+# amino acid metabolism
+```{r}
+ko_annot  %>%
+  group_by(B, C, cluster) %>%
+  summarise(n = n()) %>%
+  filter(B %in% c("Amino acid metabolism")) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~B)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")+
+  scale_y_continuous(n.breaks = 4)
+```
+
+# lipid metabolism
+```{r}
+ko_annot %>%
+  group_by(B, C, cluster) %>%
+  summarise(n = n()) %>%
+  filter(B %in% c("Lipid metabolism")) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~B)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")
+```
+
+# lipid metabolism
+```{r}
+ko_annot %>%
+  group_by(B, C, cluster) %>%
+  summarise(n = n()) %>%
+  filter(B %in% c("Lipid metabolism")) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~B)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")
+```
+
+# VFA metabolism
+```{r}
+ko_annot %>%
+  filter(C %in% c("Pyruvate metabolism", "Butanoate metabolism")) %>%
+  group_by(B, cluster) %>%
+  summarise(n = n()) %>%
+  mutate(category = rep('VFA metabolism', nrow(.))) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~category)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")
+```
+
+# Methane metabolism
+```{r}
+ko_annot %>%
+  group_by(B, C, cluster) %>%
+  summarise(n = n()) %>%
+  filter(C %in% c("Methane metabolism")) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~C)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")
+```
+
+# Nitrogen metabolism
+```{r}
+ko_annot  %>%
+  group_by(B, C, cluster) %>%
+  summarise(n = n()) %>%
+  filter(C %in% c("Nitrogen metabolism")) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~C)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")
+```
+
+# Sulfur metabolism
+```{r}
+ko_annot %>%
+  group_by(B, C, cluster) %>%
+  summarise(n = n()) %>%
+  filter(C %in% c("Sulfur metabolism")) %>%
+ggplot(., aes(x = cluster, y = n, fill = cluster))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = c("#A569BD", "#D4AC0D", "#3498DB", "#E74C3C", "#7fc97f"))+
+  facet_wrap(~C)+
+  theme(
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  )+
+  labs(x = "", y = "", fill = "")+
+  scale_y_continuous(n.breaks = 4)
+```
+

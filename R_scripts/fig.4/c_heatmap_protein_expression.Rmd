@@ -1,0 +1,99 @@
+---
+title: "heatmap_mag_protein_expression"
+output: html_document
+date: "2023-11-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load data
+```{r}
+dir <- "PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data"
+data_joined <- read.csv(paste0(dir, "/AllSamples_taxa_function_uniquePept.csv"))
+cluster_data_5 <- read.csv(paste0(dir, "/cluster_data_5.csv"))
+```
+
+# preprocess data
+```{r}
+# group NAs into "Function unknown"
+data_joined$cog_name <- ifelse(is.na(data_joined$cog_name), "Function unknown", data_joined$cog_name)
+
+data_joined <- data_joined %>%
+  mutate(site = case_when(
+    sample_id %in% c("L001","L036", "L078") ~ 'raw_wastewater', 
+    sample_id %in% c("L003","L038","L080") ~ 'anaerobic_digester', 
+    sample_id %in% c("L004","L039","L081") ~ 'anoxic_tank', 
+    sample_id %in% c("L005","L040","L082") ~ 'oxic_tank'
+    ))
+
+data_joined <- data_joined %>%
+  mutate(time = case_when(
+    sample_id %in% c("L001","L003", "L004", "L005") ~ 'S', 
+    sample_id %in% c("L036","L038", "L039", "L040") ~ 'F', 
+    sample_id %in% c("L078","L080", "L081", "L082") ~ 'W'
+    ))
+
+data_joined$mag_id <- paste(data_joined$sample_id, data_joined$bin_id, sep = "_")
+data_joined <- left_join(data_joined, select(cluster_data_5, mag_id, cluster), by = "mag_id")
+```
+
+# summarize at family level
+```{r}
+# filter unknown families
+data_family <- filter(data_joined, !is.na(cluster))
+data_family <- filter(data_family, !is.na(family))
+
+# order species by abundance (51 families in total)
+abund_order <- data_family %>%
+  group_by(family)%>%
+  summarize(total_peptide = sum(peptide_count)) %>%
+  arrange(desc(total_peptide))
+
+# filter the less abundance species into others
+data_family <- filter(data_family, data_family$family %in% abund_order$family[1:30])
+
+data_family$family <- factor(data_family$family, levels = abund_order$family)
+
+data_family$COG_code_grouped <- ifelse(data_family$COG_code %in% c("S", "C", "J", "M", "O", "P", "U", "N", "L", "E", "G"), data_family$COG_code, "Others")
+
+data_family$COG_code_grouped <- factor(data_family$COG_code_grouped, levels = c("S", "C", "J", "M", "O", "P", "U", "N", "L", "E", "G", "Others"))
+```
+
+# color by functional group
+```{r}
+data_family <- data_family %>%
+  mutate(
+    color = case_when(
+      cluster == 1 ~ "#A569BD",
+      cluster == 2 ~ "#D4AC0D",
+      cluster == 3 ~ "#3498DB",
+      cluster == 4 ~ "#EA9137",
+      cluster == 5 ~ "#7fc97f"
+    )
+  )
+
+color_orders <- data_family %>%
+  distinct(cluster, family, color) %>%
+  arrange(desc(family))
+```
+
+```{r}
+f4c <- ggplot(data_family, aes(x = COG_code_grouped, y = fct_rev(as.factor(family)))) +     
+  geom_tile(aes(fill = log(nsaf)))+
+  theme(axis.title.x = element_blank(),
+        axis.text.y = element_text(size = 16, face = "bold", color = color_orders$color),
+        axis.text.x = element_text(size = 14, color = "black"),
+        axis.title.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14),
+        legend.position = "left",
+        axis.ticks.x = element_blank(),
+        panel.background = element_rect(fill = "white"))+
+  scale_fill_distiller(palette = "Spectral")+
+  scale_y_discrete(position = "right")+
+  labs(fill = "log(NSAF)")
+```
