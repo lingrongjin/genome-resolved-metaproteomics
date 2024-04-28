@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # load data
 ```{r}
-ko_annot <- read.csv("/storage/jufengLab/jinlingrong/R/metaproteomic-data-analysis/SI/ko_annotation.csv")
+ko_annot <- read.csv("PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data/ko_annotation.csv")
 ```
 
 # carbohydrate metabolism

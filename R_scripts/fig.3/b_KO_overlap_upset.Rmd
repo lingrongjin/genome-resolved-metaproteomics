@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # load data
 ```{r}
-mag_ko <- read.csv("/storage/jufengLab/jinlingrong/R/proteomics/data/processed_data/fundamental_niche_mag_ko.csv") # 5542 unique KOs
+mag_ko <- read.csv("PATH_TO_GITHUB_DIRECTORY/metaproteomic-data-analysis/data/fundamental_niche_mag_ko.csv") # 5542 unique KOs
 mag_ko$cluster <- paste("Group", mag_ko$cluster, sep = " ")
 ```
 
