@@ -1,4 +1,3 @@
-# Paired metagenomic and metaproteomic analysis
 # Introduction
 Description below includes the workflow for spectrum correlation with MetaProteomeAnalyzer (MPA). Code and data for reproducing the figures in the manuscript can be found in 'R_scripts' and 'data' folder in this repository. 
 
